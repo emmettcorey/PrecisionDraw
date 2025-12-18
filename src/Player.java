@@ -56,7 +56,6 @@ public class Player {
         for (int i = 0; i < cardCount; i++) {
             System.out.println(" " + hand[i]);
         }
-        System.out.println("Total: " + calculateHandTotal());
     }
 
     // Accessor (getter) methods --
