@@ -1,3 +1,6 @@
 public class Main {
-    // Main entry point of the program
+    public static void main(String[] args) {
+        PrecisionDraw game = new PrecisionDraw();
+        game.playSingleRound();
+    }
 }
