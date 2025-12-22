@@ -54,8 +54,9 @@ public class Player {
     public void displayHand() {
         System.out.println(name + "'s hand:");
         for (int i = 0; i < cardCount; i++) {
-            System.out.println(" " + hand[i]);
+            System.out.print(" " + hand[i]);
         }
+        System.out.println();
     }
 
     // Accessor (getter) methods --

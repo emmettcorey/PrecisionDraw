@@ -5,7 +5,7 @@ public class Card {
     private final int value;
 
     private final static String[] RANKS = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "Jack", "Queen", "King", "Ace"};
-    private final static String[] SUITS = {"Clubs", "Diamonds", "Hearts", "Spades"};
+    private final static String[] SUITS = {"♣", "♦", "♥", "♠"};
 
     // card constructor
     public Card(String rank, String suit) {
@@ -62,7 +62,7 @@ public class Card {
     // toString method
     @Override
     public String toString() {
-        return rank + " of " + suit + " (value: " + value + ")";
+        return rank + " of " + suit;
     }
 
 }
