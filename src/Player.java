@@ -4,6 +4,7 @@ public class Player {
     private Card[] hand;
     private int cardCount;
     private int score;
+    private int cumulativeScore;
 
     // player constructor
     public Player (String name) {
@@ -11,6 +12,7 @@ public class Player {
         this.hand = new Card[52];
         this.cardCount = 0;
         this.score = 0;
+        this.cumulativeScore = 0;
     }
 
     // add card to player's hand
@@ -36,27 +38,71 @@ public class Player {
     }
 
     // calculate score based on total
+    // level 3 - update method to use optimisation
     public void calculateScore(int target) {
-        int handTotal = calculateHandTotal();
-        // perfect score
-        if (handTotal == target) {
-            score = -5; // subtract 5 for hitting target
-            // undershoot
-        } else if (handTotal < target) {
-            score = target - handTotal;
-        } else {
-            // overshoot (penalty x2)
-            score = 2 * (handTotal - target);
-        }
+        int handTotal = calculateOptimisedTotal(target); // updated
+        score = calculateScoreForTotal(handTotal, target); // simplified method to call helper method
     }
 
     // display player's hand
     public void displayHand() {
-        System.out.println(name + "'s hand:");
+        System.out.println(name + "'s cards:");
         for (int i = 0; i < cardCount; i++) {
             System.out.print(" " + hand[i]);
         }
         System.out.println();
+    }
+
+    // add round score to cumulative score
+    public void addRoundScore() {
+        cumulativeScore += score;
+    }
+
+    // ace optimisation method
+    public int calculateOptimisedTotal(int target) {
+        int baseTotal = 0;
+        int aceCount = 0;
+
+        for (int i = 0; i < cardCount; i++) {
+            baseTotal += hand[i].getValue();
+            if (hand[i].getRank().equals("Ace")) {
+                aceCount++;
+            }
+        }
+
+        // if no aces, return base total
+        if (aceCount == 0) {
+            return baseTotal;
+        }
+
+        int bestTotal = baseTotal;
+        int bestScore = calculateScoreForTotal(baseTotal, target);
+
+        // for each ace, try converting it from 11 to 1
+        for (int i = 1; i <= aceCount; i++) {
+            int adjustedTotal = baseTotal - (i * 10);
+            int adjustedScore = calculateScoreForTotal(adjustedTotal, target);
+
+            if (adjustedScore < bestScore) {
+                bestScore = adjustedScore;
+                bestTotal = adjustedTotal;
+            }
+        }
+        return bestTotal;
+    }
+
+    // helper method to calculate score based on total
+    private int calculateScoreForTotal(int total, int target) {
+        // perfect score
+        if (total == target) {
+            return -5;
+            // undershoot
+        } else if (total < target) {
+            return target - total;
+            // overshoot
+        } else {
+            return 2 * (total - target);
+        }
     }
 
     // Accessor (getter) methods --
@@ -79,5 +125,10 @@ public class Player {
     // getter method for hand
     public Card[] getHand() {
         return hand;
+    }
+
+    // getter method for cumulativeScore
+    public int getCumulativeScore() {
+        return cumulativeScore;
     }
 }
