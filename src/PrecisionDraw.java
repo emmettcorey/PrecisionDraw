@@ -13,86 +13,33 @@ public class PrecisionDraw {
     // PrecisionDraw constructor
     public PrecisionDraw() {
         this.deck = new Deck();
-        this.target = 40; // base target for level 2
+        this.target = 40; // base target
         this.scanner = new Scanner(System.in);
         this.random = new Random();
     }
 
-    // level 1
-    // method to play a single player round
-    public void playSingleRound() {
-
-        // prompt user for name
-        System.out.print("Enter your name: ");
-        String name = scanner.nextLine();
-        Player player = new Player(name);
-
-        // shuffle the deck
-        deck.shuffle();
-
-        // display target
-        System.out.println("--- Round 1 ---");
-        System.out.println("The current target is: " + target);
-
-        // prompt user to enter their guess
-        System.out.print(name + " please enter your guess: ");
-        int numCards = scanner.nextInt();
-
-        // validation for player guess
-        if (numCards < 1 || numCards > 52) {
-            System.out.println("Invalid number of cards!");
-            System.out.println("Please enter a number between 1 and 52.");
-            return;
-        }
-
-        // draw phase
-        for (int i = 0; i < numCards; i++) {
-            Card card = deck.drawCard();
-            if (card != null) {
-                player.addCard(card);
-            }
-        }
-
-        // calculate and display score
-        player.calculateScore(target);
-        player.displayHand();
-
-        // feedback message
-        int handTotal = player.calculateHandTotal();
-        if (handTotal < target) {
-            System.out.println("Under with a round total of: " + handTotal + " (score of " + player.getScore() + ")");
-        } else if(handTotal > target) {
-            int overshoot = handTotal - target;
-            System.out.println("Over with a round total of: " + handTotal + " (score of " + overshoot + " penalised to " +  player.getScore() + ")");
-        } else {
-            System.out.println("Perfect score! Round total of : " + handTotal + " (score of " + player.getScore() + ")");
-        }
-    }
-
-    // level 2
-    // helper method to return random value
+    // Helper method to return random value
     private int getRandomValue(int low, int high) {
         return random.nextInt(high - low + 1) + low;
     }
 
-    // method to play two-player, one-round match
-    public void playOneRound() {
-        // prompt player1 for their name
-        System.out.print("Enter Player1 name: ");
+    // Main method to play a full 4-round match
+    // level 3: changed from separate methods for each level to one method
+    public void playMatch() {
+
+        // Get player names
+        System.out.print("Enter Player 1 name: ");
         String name1 = scanner.nextLine();
         player1 = new Player(name1);
 
-        //prompt player2 for their name
-        System.out.print("Enter Player2 name: ");
+        System.out.print("Enter Player 2 name: ");
         String name2 = scanner.nextLine();
         player2 = new Player(name2);
 
-        // shuffle the deck
-        deck.shuffle();
-
-        // randomly select the first player
-        int firstPlayerChoice = getRandomValue(1,2);
+        // Randomly select first player for Round 1
+        int firstPlayerChoice = getRandomValue(1, 2);
         Player firstPlayer, secondPlayer;
+
         if (firstPlayerChoice == 1) {
             firstPlayer = player1;
             secondPlayer = player2;
@@ -101,34 +48,67 @@ public class PrecisionDraw {
             secondPlayer = player1;
         }
 
-        System.out.println("--- Round 1 ---");
-        System.out.println("The current target is: " + target);
-        System.out.println("The player to go first is: " + firstPlayer.getName());
+        // Play 4 rounds
+        for (int i = 1; i <= 4; i++) {
+            System.out.println("\n--- Round " + i + " ---");
+            System.out.println("The current target is: " + target);
+            System.out.println("The player to go first is: " + firstPlayer.getName());
 
-        // first player's turn
-        playerTurn(firstPlayer);
+            // Restock and shuffle deck for each round
+            deck.restock();
 
-        // second player's turn
-        playerTurn(secondPlayer);
+            // First player's turn
+            playPlayerTurn(firstPlayer);
 
-        // determine round 1 winner
-        System.out.println(player1.getName() + "'s score was: " + player1.getScore());
-        System.out.println(player2.getName() + "'s score was: " + player2.getScore());
+            // Second player's turn
+            playPlayerTurn(secondPlayer);
 
-        if (player1.getScore() < player2.getScore()) {
-            System.out.println(player1.getName() + " is the winner!");
-        } else if (player1.getScore() > player2.getScore()) {
-            System.out.println(player2.getName() + " is the winner!");
+            // Add round scores to cumulative totals
+            player1.addRoundScore();
+            player2.addRoundScore();
+
+            // Display cumulative scores
+            // Display cumulative match scores
+            System.out.println("\n" + player1.getName() + "'s match score is: " + player1.getCumulativeScore());
+            System.out.println(player2.getName() + "'s match score is: " + player2.getCumulativeScore());
+
+            // Adjust target based on both players' performance
+            if (i < 4) {
+                adjustTarget(firstPlayer, secondPlayer);
+            }
+
+            // Clear both hands for next round
+            player1.clearHand();
+            player2.clearHand();
+
+            // Alternate who goes first each round
+            Player temp = firstPlayer;
+            firstPlayer = secondPlayer;
+            secondPlayer = temp;
+        }
+
+        // Determine match winner
+        System.out.println("\nFinal Match Score: ");
+        System.out.println(player1.getName() + ": " + player1.getCumulativeScore());
+        System.out.println(player2.getName() + ": " + player2.getCumulativeScore());
+
+        if (player1.getCumulativeScore() < player2.getCumulativeScore()) {
+            System.out.println(player1.getName() + " wins");
+        } else if (player2.getCumulativeScore() < player1.getCumulativeScore()) {
+            System.out.println(player2.getName() + " wins");
         } else {
-            System.out.println("Both players received same score, it is a draw!");
+            System.out.println("\nIt's a tie!");
         }
     }
 
-    // helper method to handle player turn
-    private void playerTurn(Player player) {
-        // prompt players for their guess
+    // Helper method to handle a player's turn
+    private void playPlayerTurn(Player player) {
+
+        // Prompt for guess
+        System.out.println();
         System.out.print(player.getName() + ", please enter your guess: ");
         int numCards = scanner.nextInt();
+        scanner.nextLine(); // consume newline
 
         // validation for player guess
         if (numCards < 1 || numCards > 52) {
@@ -137,7 +117,7 @@ public class PrecisionDraw {
             return;
         }
 
-        // draw phase
+        // Draw phase
         for (int i = 0; i < numCards; i++) {
             Card card = deck.drawCard();
             if (card != null) {
@@ -145,19 +125,49 @@ public class PrecisionDraw {
             }
         }
 
-        // calculate and display score
+        // Calculate score (with ace optimisation)
         player.calculateScore(target);
+
+        // Display hand
         player.displayHand();
 
-        // feedback message
+        // Display result with ace optimisation message
         int handTotal = player.calculateHandTotal();
-        if (handTotal < target) {
-            System.out.println("Under with a round total of: " + handTotal + " (score of " + player.getScore() + ")");
-        } else if(handTotal > target) {
-            int overshoot = handTotal - target;
-            System.out.println("Over with a round total of: " + handTotal + " (score of " + overshoot + " penalised to " +  player.getScore() + ")");
+        int optimisedTotal = player.calculateOptimisedTotal(target);
+
+        // Check if ace optimisation occurred
+        if (handTotal != optimisedTotal) {
+            System.out.println("Ace optimised... updating round total from " + handTotal + " to " + optimisedTotal);
+        }
+
+        if (optimisedTotal < target) {
+            System.out.println("Under with a round total of " + optimisedTotal + " (score: " + player.getScore() + ")");
+        } else if (optimisedTotal > target) {
+            int overshoot = optimisedTotal - target;
+            System.out.println("Over with a round total of " + optimisedTotal + " (score of " + overshoot + " penalised to " + player.getScore() + ")");
         } else {
-            System.out.println("Perfect score! Round total of : " + handTotal + " (score of " + player.getScore() + ")");
+            System.out.println("Perfect score! Round total of " + optimisedTotal + " (score: " + player.getScore() + ")");
+        }
+    }
+
+    // Helper method to adjust target based on both players' performance
+    private void adjustTarget(Player player1, Player player2) {
+        int player1Total = player1.calculateOptimisedTotal(target);
+        int player2Total = player2.calculateOptimisedTotal(target);
+
+        boolean player1Undershoot = player1Total < target;
+        boolean player2Undershoot = player2Total < target;
+        boolean player1Overshoot = player1Total > target;
+        boolean player2Overshoot = player2Total > target;
+
+        if (player1Undershoot && player2Undershoot) {
+            target += 5;
+            System.out.println("\nBoth players undershot - adjusting target");
+        } else if (player1Overshoot && player2Overshoot) {
+            target -= 5;
+            System.out.println("\nBoth players overshot - adjusting target");
+        } else {
+            System.out.println("\nTarget remains at " + target);
         }
     }
 }
