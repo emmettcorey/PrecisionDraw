@@ -9,6 +9,7 @@ public class PrecisionDraw {
     private int target;
     private Scanner scanner;
     private Random random;
+    private Leaderboard leaderboard;
 
     // PrecisionDraw constructor
     public PrecisionDraw() {
@@ -16,6 +17,7 @@ public class PrecisionDraw {
         this.target = 40; // base target
         this.scanner = new Scanner(System.in);
         this.random = new Random();
+        this.leaderboard = new Leaderboard();
     }
 
     // Helper method to return random value
@@ -99,6 +101,8 @@ public class PrecisionDraw {
         } else {
             System.out.println("\nIt's a tie!");
         }
+
+        recordMatchResults();
     }
 
     // Helper method to handle a player's turn
@@ -169,5 +173,40 @@ public class PrecisionDraw {
         } else {
             System.out.println("\nTarget remains at " + target);
         }
+    }
+
+    // method to record match results to leaderboard
+    private void recordMatchResults() {
+        PlayerRecord player1Record = leaderboard.getPlayer(player1.getName());
+        PlayerRecord player2Record = leaderboard.getPlayer(player2.getName());
+
+        // if player 1 cumulative score is less than player 2
+        if (player1.getCumulativeScore() < player2.getCumulativeScore()) {
+            // player 1 win player 2 lose
+            player1Record.recordMatch(true);
+            player2Record.recordMatch(false);
+            // else if player 2 cumulative score less than player 1
+        } else if (player2.getCumulativeScore() < player1.getCumulativeScore()) {
+            // player 1 lose player 2 win
+            player1Record.recordMatch(false);
+            player2Record.recordMatch(true);
+            // else draw
+        } else {
+            // player 1 draw player 2 draw
+            player1Record.recordMatch(false);
+            player2Record.recordMatch(false);
+        }
+    }
+
+    // method to display leaderboard
+    public void displayLeaderboard() {
+        leaderboard.displayLeaderboard();
+    }
+
+    // method to search for player history
+    public void searchPlayerHistory() {
+        System.out.println("\nEnter player name to search:");
+        String name = scanner.nextLine();
+        leaderboard.searchPlayer(name);
     }
 }
