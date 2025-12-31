@@ -185,11 +185,13 @@ public class PrecisionDraw {
             // player 1 win player 2 lose
             player1Record.recordMatch(true);
             player2Record.recordMatch(false);
+            System.out.println(player1.getName() + " wins with a tally of: " + player1Record.getTotalWins());
             // else if player 2 cumulative score less than player 1
         } else if (player2.getCumulativeScore() < player1.getCumulativeScore()) {
             // player 1 lose player 2 win
             player1Record.recordMatch(false);
             player2Record.recordMatch(true);
+            System.out.println(player2.getName() + " wins with a tally of: " + player2Record.getTotalWins());
             // else draw
         } else {
             // player 1 draw player 2 draw
@@ -205,7 +207,7 @@ public class PrecisionDraw {
 
     // method to search for player history
     public void searchPlayerHistory() {
-        System.out.println("\nEnter player name to search:");
+        System.out.print("Enter player name to search:");
         String name = scanner.nextLine();
         leaderboard.searchPlayer(name);
     }
