@@ -21,6 +21,14 @@ public class PlayerRecord {
         }
     }
 
+    // method to calculate win percentage
+    private double calculateWinPercentage() {
+        if (totalMatches == 0) {
+            return 0.0;
+        }
+        return ((double) totalWins / totalMatches) * 100.0;
+    }
+
     // Accessor (getter) methods --
 
     // getter method for name
@@ -36,6 +44,11 @@ public class PlayerRecord {
     // getter method for totalWins
     public int getTotalWins() {
         return totalWins;
+    }
+
+    // getter method for winPercentage
+    public double getWinPercentage() {
+        return calculateWinPercentage();
     }
 
     // method to display player stats
