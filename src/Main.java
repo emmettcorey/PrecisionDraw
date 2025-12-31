@@ -14,7 +14,9 @@ public class Main {
             System.out.println("\n1. Play Match");
             System.out.println("2. View Leaderboard");
             System.out.println("3. Search Player History");
-            System.out.println("4. Exit");
+            System.out.println("4. Compare Two Players");
+            System.out.println("5. List Players With >X Wins");
+            System.out.println("6. Exit");
 
             // prompt user for choice
             try {
@@ -34,6 +36,12 @@ public class Main {
                         game.searchPlayerHistory();
                         break;
                     case 4:
+                        game.compareTwoPlayers();
+                        break;
+                    case 5:
+                        game.listPlayersWithMinWins();
+                        break;
+                    case 6:
                         System.out.println("Exiting");
                         return;
                     default:

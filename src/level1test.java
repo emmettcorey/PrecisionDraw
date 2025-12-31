@@ -1,4 +1,4 @@
-public class level1Test {
+public class level1test {
     public static void main(String[] args) {
         System.out.println("---Level 1 tests--- \n");
 
