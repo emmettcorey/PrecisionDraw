@@ -207,8 +207,26 @@ public class PrecisionDraw {
 
     // method to search for player history
     public void searchPlayerHistory() {
-        System.out.print("Enter player name to search:");
+        System.out.print("Enter player name to search: ");
         String name = scanner.nextLine();
         leaderboard.searchPlayer(name);
+    }
+
+    // method to get input for compare player method
+    public void compareTwoPlayers() {
+        System.out.print("Enter first player name: ");
+        String name1 = scanner.nextLine();
+        System.out.print("Enter second player name: ");
+        String name2 = scanner.nextLine();
+
+        leaderboard.compareTwoPlayers(name1, name2);
+    }
+
+    // method to get input for displaying minimum wins method
+    public void listPlayersWithMinWins() {
+        System.out.print("Enter minimum number of wins: ");
+        int minWins = scanner.nextInt();
+
+        leaderboard.listPlayersWithMinWins(minWins);
     }
 }

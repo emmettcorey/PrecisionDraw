@@ -85,6 +85,76 @@ public class Leaderboard {
         }
     }
 
+    // method to compare two players
+    public void compareTwoPlayers(String name1, String name2) {
+        PlayerRecord player1 = findPlayer(name1);
+        PlayerRecord player2 = findPlayer(name2);
+
+        // check if both players exist
+        boolean player1Found = player1 != null;
+        boolean player2Found = player2 != null;
+
+        if (!player1Found) {
+            System.out.println(name1 + " not found");
+        }
+
+        if (!player2Found) {
+            System.out.println(name2 + " not found");
+        }
+
+        // if either player is not found exit method
+        if (!player1Found || !player2Found) {
+            return;
+        }
+
+        // display player comparison
+        // AI (Claude AI) was used to create table format to display player comparison
+        System.out.println("\n----- Player Comparison -----");
+        System.out.printf("%-15s %-15s %-15s %-15s%n", "Player", "Match Count", "Wins", "Wins%");
+        System.out.printf("%-15s %-15d %-15d %.1f%%%n",
+                player1.getName(),
+                player1.getTotalMatches(),
+                player1.getTotalWins(),
+                player1.getWinPercentage());
+        System.out.printf("%-15s %-15d %-15d %.1f%%%n",
+                player2.getName(),
+                player2.getTotalMatches(),
+                player2.getTotalWins(),
+                player2.getWinPercentage());
+        System.out.println("-----------------------------");
+    }
+
+    // method to display players with >x wins
+    public void listPlayersWithMinWins(int minWins) {
+        // sort players
+        sortPlayers();
+
+        // count players with more than x wins
+        int count = 0;
+
+        for (int i = 0; i < playerCount; i++) {
+            if (players[i].getTotalWins() > minWins) {
+                count++;
+            }
+        }
+
+        // check if any players meet criteria
+        if (count == 0) {
+            System.out.println("\nNo players have more than " + minWins + " wins");
+            return;
+        }
+
+        // display leaderboard of players with >x wins
+        System.out.println("\nPlayers with more than " + minWins + ":");
+        int rank = 1;
+        for (int i = 0; i < playerCount; i++) {
+            if (players[i].getTotalWins() > minWins) {
+                System.out.println(rank + ". " + players[i].toString());
+                rank++;
+            }
+        }
+    }
+
     // method to get total number of players
     public int getPlayerCount() {
         return playerCount;
