@@ -12,11 +12,12 @@ public class Main {
         while(true) {
             // display leaderboard options
             System.out.println("\n1. Play Match");
-            System.out.println("2. View Leaderboard");
-            System.out.println("3. Search Player History");
-            System.out.println("4. Compare Two Players");
-            System.out.println("5. List Players With >X Wins");
-            System.out.println("6. Exit");
+            System.out.println("2. Run Simulation");
+            System.out.println("3. View Leaderboard");
+            System.out.println("4. Search Player History");
+            System.out.println("5. Compare Two Players");
+            System.out.println("6. List Players With >X Wins");
+            System.out.println("7. Exit");
 
             // prompt user for choice
             try {
@@ -30,18 +31,21 @@ public class Main {
                         game.playMatch();
                         break;
                     case 2:
-                        game.displayLeaderboard();
+                        game.runSimulation();
                         break;
                     case 3:
-                        game.searchPlayerHistory();
+                        game.displayLeaderboard();
                         break;
                     case 4:
-                        game.compareTwoPlayers();
+                        game.searchPlayerHistory();
                         break;
                     case 5:
-                        game.listPlayersWithMinWins();
+                        game.compareTwoPlayers();
                         break;
                     case 6:
+                        game.listPlayersWithMinWins();
+                        break;
+                    case 7:
                         System.out.println("Exiting");
                         return;
                     default:

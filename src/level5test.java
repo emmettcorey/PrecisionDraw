@@ -6,7 +6,7 @@ public class level5test {
         testListPlayersWithMinWins();
         testWinPercentageCalculation();
 
-        System.out.println("\n ---Level 5 tests complete---");
+        System.out.println("\n---Level 5 tests complete---");
     }
 
     // Test 1: Verify comparing two players displays correct stats
