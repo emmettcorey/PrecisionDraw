@@ -1,3 +1,5 @@
+import java.io.*; // import for file
+
 public class Leaderboard {
     // instance variables
     private PlayerRecord[] players;
@@ -67,7 +69,7 @@ public class Leaderboard {
         }
         // sort before displaying
         sortPlayers();
-        System.out.println("\nLeaderboard:");
+        System.out.println("Leaderboard:");
         for (int i = 0; i < playerCount; i++) {
             System.out.println((i + 1) + ". " + players[i].toString());
         }
@@ -158,5 +160,72 @@ public class Leaderboard {
     // method to get total number of players
     public int getPlayerCount() {
         return playerCount;
+    }
+
+    // method to save leaderboard to file
+    public void saveToFile(String filename) {
+        try {
+            // create writers
+            FileWriter writer = new FileWriter(filename);
+            BufferedWriter bufferedWriter = new BufferedWriter(writer);
+
+            // write player data
+            // AI (Claude) explained benefits of using BufferedWriter
+            // compared to FileWriter
+            for (int i =0; i < playerCount; i++) {
+                PlayerRecord player = players[i];
+                bufferedWriter.write(player.getName() + "," +
+                        player.getTotalMatches() + "," +
+                        player.getTotalWins());
+                bufferedWriter.newLine();
+            }
+
+            bufferedWriter.close();
+            System.out.println("Leaderboard saved successfully");
+
+            // catch error saving leaderboard
+        } catch (IOException e) {
+            System.out.println("Error saving leaderboard: " + e.getMessage());
+        }
+    }
+
+    // method to load leaderboard from file
+    public void loadFromFile(String filename) {
+        try {
+            // create readers
+            FileReader reader = new FileReader(filename);
+            BufferedReader bufferedReader = new BufferedReader(reader);
+
+            String line;
+            // while there is another line in file
+            while ((line = bufferedReader.readLine()) != null) {
+                // split the line by a comma
+                String[] parts = line.split(",");
+
+                // split into name, total matches, total wins
+                if (parts.length == 3) {
+                    String name = parts[0];
+                    int totalMatches = Integer.parseInt(parts[1]);
+                    int totalWins = Integer.parseInt(parts[2]);
+
+                    // create player and set stats
+                    addPlayer(name);
+                    PlayerRecord player = findPlayer(name);
+                    if (player != null) {
+                        for (int i = 0; i < totalMatches; i++) {
+                            player.recordMatch(i < totalWins);
+                        }
+                    }
+                }
+            }
+
+            bufferedReader.close();
+            System.out.println("Leaderboard loaded successfully");
+            // catch errors loading leaderboard
+        } catch (FileNotFoundException e) {
+            System.out.println("No saved leaderboard, starting fresh");
+        } catch (IOException e) {
+            System.out.println("Error loading leaderboard: " + e.getMessage());
+        }
     }
 }

@@ -46,6 +46,7 @@ public class Main {
                         game.listPlayersWithMinWins();
                         break;
                     case 7:
+                        game.saveLeaderboard();
                         System.out.println("Exiting");
                         return;
                     default:

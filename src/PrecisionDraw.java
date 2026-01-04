@@ -10,6 +10,7 @@ public class PrecisionDraw {
     private Scanner scanner;
     private Random random;
     private Leaderboard leaderboard;
+    private static final String LEADERBOARD_FILE = "leaderboard.txt"; // constant filename
 
     // PrecisionDraw constructor
     public PrecisionDraw() {
@@ -18,11 +19,17 @@ public class PrecisionDraw {
         this.scanner = new Scanner(System.in);
         this.random = new Random();
         this.leaderboard = new Leaderboard();
+        this.leaderboard.loadFromFile(LEADERBOARD_FILE);
     }
 
     // Helper method to return random value
     private int getRandomValue(int low, int high) {
         return random.nextInt(high - low + 1) + low;
+    }
+
+    // method to save leaderboard when exiting
+    public void saveLeaderboard() {
+        leaderboard.saveToFile(LEADERBOARD_FILE);
     }
 
     // Main method to play a full 4-round match
@@ -111,14 +118,6 @@ public class PrecisionDraw {
         System.out.println("\nFinal Match Score: ");
         System.out.println(player1.getName() + ": " + player1.getCumulativeScore());
         System.out.println(player2.getName() + ": " + player2.getCumulativeScore());
-
-        if (player1.getCumulativeScore() < player2.getCumulativeScore()) {
-            System.out.println(player1.getName() + " wins");
-        } else if (player2.getCumulativeScore() < player1.getCumulativeScore()) {
-            System.out.println(player2.getName() + " wins");
-        } else {
-            System.out.println("\nIt's a tie!");
-        }
 
         recordMatchResults();
     }
@@ -255,6 +254,7 @@ public class PrecisionDraw {
     public void listPlayersWithMinWins() {
         System.out.print("Enter minimum number of wins: ");
         int minWins = scanner.nextInt();
+        scanner.nextLine(); // AI (Claude) recommended new line consumer to fix issues when running code
 
         leaderboard.listPlayersWithMinWins(minWins);
     }
@@ -314,6 +314,7 @@ public class PrecisionDraw {
     public void runSimulation() {
         System.out.print("Enter number of simulations: ");
         int numSimulations = scanner.nextInt();
+        scanner.nextLine(); // AI (Claude) recommended new line consumer to fix issues when running code
 
         for (int i = 1; i <= numSimulations; i++) {
             System.out.println("Simulated Match " + i);
